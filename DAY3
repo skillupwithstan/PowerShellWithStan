@@ -1,0 +1,121 @@
+#CAR --> OBJECT
+
+#PROPERTIES --> COLOR, TYRES
+#METHODS --> BREAK, START, STOP
+
+#Get-Member --> To fetch the properties and methods of a variable/object/command
+
+#Format-Table --> ft
+#Format-List --> fl
+#Format-wide --> fw
+
+
+#sorting --> sort-object (sort)
+#selecting --> select-object (select)
+#conditioning --> where-object (where, ?)
+
+Stop-Process -Name notepad
+
+Get-Process -Name notepad | Stop-Process -WhatIf
+
+Get-Service | Stop-Service -Confirm
+ 
+Get-Process notepad,powershell_ise
+
+help Get-Process
+
+Get-Service | Get-Member
+
+Get-Printer | gm
+
+Get-Service -Name ALG
+
+
+Get-Service | Select-Object Name, Status
+
+
+(gsv).Name
+
+1. (Get-Service -Name WinRM,ALG).Stop()
+
+2. Stop-Service ALG 
+
+3. Get-Service winrm | Stop-Service
+
+#FORMATTING, SORTING, SELECT & WHERE OBJECT
+#==========================================
+
+#Format
+Get-Service | Format-Table -Wrap -AutoSize
+
+Get-Process | Format-List
+
+Get-Service | Format-Wide
+
+#Sorting
+
+Get-Service | Sort -Property Status | Out-GridView
+
+Get-Process | sort-object VM -Descending | select Name,VM -First 10
+
+Get-Process | Sort VM | select Name,VM -Last 10
+
+
+
+
+
+#Select - select perticular field/property
+
+Get-Service | Select-Object Name,Status,StartType
+
+gsv | select *
+
+# Need to extract Id, message from Application/System Events - latest 10 - Information/Error
+
+Get-EventLog System -Newest 10 | select TimeGenerated, InstanceId, message | ft -Wrap -AutoSize
+
+
+#custom property
+@{n="Process Name"; e={$_.Name}}
+
+#Syntax: @{name="";expression={}}
+
+
+
+#name - n, na
+#expression - e, exp, ex
+
+@{name = "user defined name" ; expression = { $_.Name }}
+@{name = "VM (GB)" ; expression = { $_.VM / 1GB }}
+
+Get-Service | Select-Object Name,Status
+Get-Service | Select-Object @{name="Service Name";expression={$_.Name}},Status
+
+Get-Process | Sort-Object PM | select Name,@{name="PM (GB)";expression={$_.PM/1GB}} -Last 10
+
+Get-Process | Sort-Object VM -Descending| select Name,@{name="VM (MB)";expression={$_.VM/1MB -as [int]}} -First 10
+
+
+#Get-Service | sort @{name="Service Status";expression={$_.Status}}
+
+Get-EventLog -LogName Application -Newest 10 | select Message |  Out-GridView
+
+
+#Where - to apply condition
+
+Get-Service | where {$_}
+
+Get-Service | Where-Object {$_.Status -match "Stopped"} | select Name,Status
+
+Get-Service | where {$_.Status -cmatch "Stopped"}
+
+Get-Process | ? {$_.Name -like "powershell*"} | select -Property ProcessName
+
+
+Get-EventLog System -Newest 10 | 
+select TimeGenerated, InstanceId,@{Name="Event Message";Expression={$_.message}},EntryType |
+where {$_.EntryType -match "Warning"}
+
+Get-EventLog System -Newest 10 | 
+where {$_.EntryType -match "Warning"} |
+select TimeGenerated, InstanceId,@{Name="Event Message";Expression={$_.message}}

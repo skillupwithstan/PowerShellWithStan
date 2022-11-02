@@ -1,0 +1,130 @@
+13344545 / 1GB                                                                                              
+13344545 / 1GB -as [int]                                                                                      
+13344545 / 1GB -as [float]  
+[math]::Round(100.5080)
+                                                                                               
+[math]::Round(342425425/1GB,4)                                                                                
+[math]::Round(342425425/1GB,2)
+
+#:: --> scope resolution operator
+
+class Math
+{
+    class Road: Travel
+    {
+        Round();
+        ticketno = 100;
+    }
+    class Sky: Travel
+    {
+        Flight_Operation();
+        flightno;
+    }
+    class track: Travel
+    {
+
+    }
+}
+
+
+
+Get-Process | Sort-Object PM | select Name,@{name="PM (GB)";expression={$_.PM/1GB}} -Last 10                  
+
+Get-Process | Sort-Object PM | select Name,@{name="PM (GB)";expression={$_.PM/1GB -as [int]}} -Last 10 
+       
+Get-Process | Sort-Object PM | select Name,@{name="PM (GB)";expression={$_.PM/1GB -as [float]}} -Last 10
+
+Get-Process | Sort-Object PM | select Name,@{name="PM (GB)";expression={[math]::Round($_.PM/1GB,2)}} -Last 10 
+
+Get-Process | sort PM | select Name,PM -Last 10
+
+
+"a","b","c","a","a","a" | Select-Object -Unique
+
+"a","b","c","a","a","a" | Select-Object -Unique -First 2
+
+"a","b","c","a","a","a" | Select-Object -First 2 -Unique
+
+
+
+#Getting Weekdays and Current Month
+
+Get-Date -Format 'M'
+Get-Date -Format 'MM'
+Get-Date -Format 'MMM' 
+Get-Date -Format 'MMMM'
+
+<#
+Day - d 
+Month - M 
+Year - y 
+Hour (12hr) - h 
+Hour (24hr) - H 
+Minute - m 
+Second - s
+#>
+
+get-date -Format "yyyy-MM-dd HH:mm"
+
+Get-Date | Get-Member
+
+(get-date).Month
+
+(Get-Date).AddDays(20).ToShortDateString()
+(Get-Date).AddDays(-20)
+
+(Get-Date).AddHours(-12)
+(Get-Date).AddHours(24)
+
+(get-date).Day
+(get-date).ToUniversalTime()
+
+(Get-Date).ToShortDateString()
+(Get-Date).ToShortTimeString()
+
+
+Get-EventLog -LogName System -EntryType Error -After (Get-Date).AddHours(-12)
+
+
+
+
+#Read 
+
+Read-Host "Enter the server name"
+
+$a = Read-Host "Enter the server name"
+$a 
+
+
+$b = hostname
+
+$b | Out-File
+
+
+
+
+
+[void] [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
+
+$cn=[Microsoft.VisualBasic.Interaction]::InputBox('Enter Computer Name:')
+$cn 
+
+[Microsoft.VisualBasic.Interaction]::MsgBox("")
+
+$cn=[Microsoft.VisualBasic.Interaction]::InputBox('Enter Computer Name:','Computer Name','server123')
+$cn
+
+
+
+#Write-Host does not accept pipeline
+Write-Host "Hello"
+Write-Host "Hello" -NoNewline
+Write-Host "Hello" -ForegroundColor Green -BackgroundColor Red 
+
+#It accepts pipeline
+Write-Host "Hello" | where {$_.length -gt 5}
+
+Write-Output "Hello" | where {$_.length -gt 5} 
+
+Write-Warning ‘Almost done...’ 
+

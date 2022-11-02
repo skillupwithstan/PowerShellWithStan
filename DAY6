@@ -1,0 +1,215 @@
+image.png
+
+1. System defined/automatic variable 
+2. user defined variable
+
+#Variables & Quote Diff
+
+$number = 10
+$name = "Arockia"
+$arockia = $true
+
+$service = Get-Service
+$service
+$service.Name
+[OR]
+(Get-Service).Name
+[OR]
+Get-Service | select Name
+
+========================================================================================
+Data type --> integer (int32,int64),char,string,float (0.00),double, boolean ($true,$false)
+
+int32 => -2147483648  to 2147483647
+int64 => -9223372036854775808 to 9223372036854775807
+========================================================================================
+
+$i=1
+
+[int]$port 
+[char]$letter 
+[string]$servername
+[float]$no
+[double]$num 
+
+
+[int]$port1 = Read-Host "Enter the port number"
+
+[int]$port = 80
+
+[string]$b = "a"
+
+$c = 'b'
+
+[int]$i = 100
+
+'Result = $i'
+"Result = $i"
+
+
+$a=“Kumar”
+$a
+
+$a | gm
+
+$a.Length
+$a.toupper()
+$a.tolower()
+$b = $a.replace(“Kumar”,”Raja”)
+
+"The source value $a has been changed to $b"
+
+
+#Objects & Data Types
+
+$a = 1
+$a.GetType()
+
+$a = 1.87
+$a.GetType().FullName
+
+$a = 623876378232
+$a.GetType().FullName
+
+$a = ‘Hello’
+$a.GetType().FullName
+
+$a = Get-Date
+$a.GetType().FullName 
+
+
+$servicearr = Get-Service
+
+
+$a = 3
+[int[]]$array = 2,3,5,6
+$array = 2,3,5,6, $false
+
+
+Boolean --> True (1) | False (0)
+
+$true
+$false
+
+
+#Arrays
+
+$myArray = "Hello", 12, (Get-Date), $null, $true
+$myArray.Count
+
+$myArray[0] 
+$myArray[1]
+$myArray[-1]
+
+$myArray = $myArray[0..2] # $myArray[0,1,2]
+$myArray.Count 
+
+$myArray += 'new element' #$myArray = $myArray + "New value"
+$myArray.Count
+
+#strongly-typed array
+[Int[]]$myArray = 1,2,3
+$myArray += 12 # += --> Shorthand operator
+
+#To know the data type
+$array1 = [Int[]](1,2,3,4,5),"Hi"
+$array1.GetType()
+
+$array1 += “Google”
+$array1.GetType()
+
+
+$array = 12,24,35,5,4
+
+$array = @()
+
+$array += "af"
+
+Remove-Variable $array,$arockia
+
+
+#Hash values
+
+$person = @{}
+$person
+
+#Keys & Values
+
+$person.Age = 23 
+$person.Name = ‘Kumar’ 
+$person.Status = ‘Online’ 
+
+$person
+
+#method:1
+$person.Name
+$person.Status
+
+#method:2
+$person[‘Age’] 
+
+#method:3
+$info = ‘Age’
+$person.$info
+
+$person.Keys.Count
+$person.Values
+
+#Using Ordered Hash Tables
+
+$hash = @{Name=’Raja’; 
+Age=60; 
+Status=’Online’}
+$hash
+
+$hash = [ordered] @{Name=’Raja’; Age=60; Status=’Online’} 
+$hash
+
+$hash.Count
+
+#Converting Hash Tables to PS Objects
+#Method - 1
+
+$hash = @{Name=’Raja’; Age=60; Status=’Online’} 
+$hash.GetType()
+
+$obj = New-Object PSObject -Property $hash
+$obj
+$obj.GetType()
+
+#Method - 2
+
+$data = @{ 
+    LastName=’Kumar’
+    FirstName=’Rajesh’
+    Id=123 
+    }
+
+$data
+
+$myObject = [PSCustomObject]$data 
+$myObject
+$myObject.GetType()
+
+#Remove Keys from Hash Tables
+
+$myHash = @{
+Name = ‘Raja’ 
+ID = 12 
+Location = ‘Chennai’ 
+}
+$myHash
+
+$myHash.Remove(‘Location’) 
+$myHash
+
+
+Server Name : $server
+User Name   : $user
+
+
+$apiresult = {
+Incident Number : INC024324
+}
+
+$apiresult."Incident Number"

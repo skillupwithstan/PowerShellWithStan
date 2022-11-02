@@ -1,0 +1,174 @@
+WMI - Windows Management Instrumentation (Get-WmiObject --> gwmi)
+CIM - Common Information Model (Get-CimInstance --> gcim)
+
+The repository that Common Information Model (CIM) and Windows Management Instrumentation (WMI) 
+use is organized into namespaces. 
+A namespace is a folder that groups related items for organizational purposes.
+
+Namespaces contain classes.
+classes contains properties & methods
+
+
+root
+ -- namespaces (cimV2)
+      -- classes (Win32_OperatingSystem)
+          -- properties (os name)
+	  -- methods (reboot,shutdown)
+
+
+# WMI CONCEPTS
+===============
+
+#To list all classes in cim namespace
+
+Get-WmiObject -List -Namespace root\cimv2
+
+(gwmi -List).count
+
+#To list Namespaces
+
+Get-WmiObject -Query “Select * from __Namespace” -Namespace Root | Select Name
+
+Get-CimInstance -Namespace root -ClassName __Namespace
+
+
+#To find classes
+Get-WmiObject -Class *operating* -List
+
+Get-WmiObject -Class *bios* -List
+
+#To get OS related information
+
+Get-WmiObject -Class Win32_OperatingSystem | select *
+
+Get-WmiObject -ComputerName localhost,tst12,tst4 -Credential (Get-Credential) -Class Win32_OperatingSystem | select LastBootUpTime
+
+Get-CimInstance -Class Win32_OperatingSystem | select LastBootUpTime,Status,Name
+
+gwmi Win32_OperatingSystem | select LastBootuptime,status,name
+
+Get-CimInstance -Class Win32_OperatingSystem | Get-Member
+
+
+
+gwmi -Namespace root\cimv2 -Class win32_operatingsystem 
+
+
+gwmi -Namespace root\securitycenter2 -List 
+
+gwmi -Namespace root\securitycenter2 -Class *antivirus* -List
+
+
+gwmi -Namespace root\securitycenter2 -Class AntiVirusProduct | select displayname
+
+
+
+#To get installed software and it's version
+gwmi win32_product | select Name,version
+
+gwmi win32_product | gm
+
+gwmi win32_product | where {$_.Name -match "PingID"} | select Name,Version,Vendor,ProductID
+
+gwmi win32_product | where {$_.Name -like "Ping*"} | select *
+
+gwmi win32_product|? {$_.Name -like "google*"}|select name,version,installdate
+
+gcim -ClassName win32_product | ?{$_.Name -like "GOOGLE*"} | select -Property Name,version
+
+
+#Get-CimInstance -Class win32_product | where {($_.name -Like "*ses*") -or ($_.name -like "*windows*")}
+
+
+get-service
+
+
+gcim win32_service | select Name,State
+
+gsv | select Name,Status
+
+
+#To get antivirus product
+Get-WmiObject -Namespace root\SecurityCenter2 -List
+
+
+Get-WmiObject -Namespace root\SecurityCenter2 -class "*antivirus*" -List
+
+
+Get-WmiObject -Namespace root\SecurityCenter2 -Class AntivirusProduct | select *
+
+gcim -Namespace root\SecurityCenter2 -Class AntivirusProduct | select DisplayName
+
+
+#To get BIOS related info.
+
+Get-WmiObject -Namespace root/cimv2 -Class Win32_BIOS
+
+gcim win32_bios
+
+
+
+
+
+Get-WmiObject Win32_BIOS -ComputerName ‘localhost’,'1234',’CHNSHL425132L’ -ErrorAction Stop
+
+
+#Get-WmiObject Win32_BIOS -ComputerName (Get-Content D:\TEST\serverinput.txt) 
+
+
+$ErrorActionPreference = Stop
+Get-WmiObject Win32_BIOS -ComputerName ‘localhost’,'1234',’CHNSHL425132L’ -ErrorAction SilentlyContinue
+
+
+Get-WmiObject Win32_BIOS -ComputerName ‘localhost’,'1234',’CHNSHL425132L’ -ErrorAction Continue
+
+
+
+Get-WmiObject Win32_LogicalDisk | ForEach-Object {  
+    'Disk ' +$_.Caption +' has '+ ($_.FreeSpace / 1MB) +' MB space available’ }
+
+
+Get-WmiObject Win32_LogicalDisk | ForEach-Object {  
+    ‘Disk {0} has {1} MB space available’ -f $_.Caption, ($_.FreeSpace / 1MB) }
+
+
+Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | ForEach-Object {  
+    "Disk {1} has {0:0.00} MB space available" -f ($_.FreeSpace / 1MB),$_.Caption 
+    }
+
+
+Get-CimInstance -ClassName Win32_OperatingSystem |   Select-Object  LastBoot* 
+
+Get-WmiObject -Class Win32_OperatingSystem |   Select-Object  LastBoot* 
+
+
+Get-WmiObject -Class Win32_NetworkAdapterConfiguration -Filter ‘IPEnabled=true’ |  Select-Object -Property IPAddress
+Get-CimInstance -Class Win32_NetworkAdapterConfiguration -Filter ‘IPEnabled=true’ |  Select-Object -ExpandProperty IPAddress
+
+
+#To get member of class
+
+Get-WmiObject win32_networkadapterconfiguration | Get-Member
+
+gwmi win32_networkadapterconfiguration | where {$_.Description -like "BlueTooth*"}  | Invoke-WmiMethod -Name enabledhcp -WhatIf
+
+gcim win32_networkadapterconfiguration |?{$_.Description -like "Hyper*"} | Invoke-CimMethod -Name enabledhcp -WhatIf
+
+
+gwmi win32_operatingsystem -ComputerName ser1,ser2,ser3 -Credential $cred | Invoke-WmiMethod Reboot
+
+
+
+
+
+[WMI]'Win32_Logicaldisk="C:"'
+
+gwmi Win32_Logicaldisk -Filter "DeviceID = 'C:'"
+
+[WMI]'Win32_Service.Name="winRM"'
+
+gwmi Win32_Service | where {$_.Name -eq "winRM"}
+
+gwmi win32_operatingsystem -ComputerName server1,server2,server3 -Credential (Get-Credential) | select BuildNumber,Version
+
+----------------------------------------------------------------------------

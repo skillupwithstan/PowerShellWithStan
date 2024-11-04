@@ -248,7 +248,7 @@ $input1.Split(" ")[1].Trim()
 #======================================
 
 #If condition & Foreach loop
-$Computers = "localhost","CHNSHL425132L"
+$Computers = "localhost","12.4.5.2"
 
 foreach($Computer in $Computers)
 {

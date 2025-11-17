@@ -1,0 +1,99 @@
+#CAR --> OBJECT
+
+#PROPERTIES --> COLOR, TYRES
+#METHODS --> BREAK, START, STOP
+
+#Get-Member --> To fetch the properties and methods of a variable/object/command
+Comment - single --> #, multiple lines --> <#  #>
+
+
+cat
+cp
+mv
+ls
+
+gcr --> Get-CapacityReport -ComputerName localhost -Drive C
+
+1. system defined
+2. environmental variables
+3. user defined
+
+int i = 0;
+
+i = 0 --> int
+i = "abc" --> string
+1 = 2,3,"abc" --> object[]
+
+#############################
+
+Commands:
+
+#To get the status of spooler service
+#Get-Service -Name Spooler -ComputerName localhost
+
+<#
+Author: Kumar
+Create Date: 10-Nov-2025
+Description:
+Version: 1.0
+#>
+
+(Get-Alias).count
+
+Get-Alias -Name gps
+Get-Alias -Definition Get-Service
+
+Get-Alias gsv
+
+
+Get-Alias gp*
+
+New-Alias -Name abc -Value Get-Service
+
+Get-Alias -Definition Get-Service
+
+Get-Service
+
+gsv
+
+abc
+
+Export-Alias C:/alias.txt 
+
+Import-Alias C:/alias.txt 
+
+$servername = 'localhost'
+
+$servername = "localhost"
+
+Write-Host "$servername"
+
+$servername.Length #--> properties
+
+$servername.GetType()
+
+$server1 = "server1"
+$server2 = "server2"
+
+$dev_server = "server1"
+$prod_server = "server2"
+
+$flag = $true
+
+$flag.gettype()
+
+$port = 443
+
+$port.GetType()
+
+#Read-Host
+Write-Host "Hello"
+Write-Host "The entered server name is: $servername" # -ForegroundColor Red
+
+$num = 1,2,3
+
+$server_list = "server1","server2","server3"
+
+$port = 80
+
+$port

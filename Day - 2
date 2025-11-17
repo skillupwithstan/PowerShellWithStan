@@ -1,0 +1,92 @@
+1. New server - New installation
+2. Existing server - New installation, Upgrade, Uninstallation
+
+Running a PS using short-cut keys:
+F5 - Full execution
+F8 - Selection execution
+F10
+F11
+
+- --> parameters
+$ --> variables
+
+Data types: grouping of similar types
+-------------------------------------
+
+1,2,3,4, -324, -324, 3248643298590425, etc., --> numbers --> integers (32/64)
+
+-624324 to 624324 -- int 32
+
+0.45, -56.34, etc., --> decimal point value --> float, double
+
+a,B,c,D,etc., --> letters, alphabets --> characters
+
+ab, bc, name, age123, address, etc., --> words, sentence --> string
+
+true, false --> boolean
+
+Arrays: more than one data type.
+--------------------------------
+
+"1,2,3" --> int[] --> integer arrays
+"raja","ram","kumar" --> string[] --> string arrays
+"1,True,Raja" --> object[] 
+
+######################
+
+Commands:
+
+Get-Help service
+
+Get-Help *service
+
+get-help Get-Service
+
+get-help Get-Service -Detailed
+
+Get-Help Get-Service -Online
+
+get-help Get-Service -Full
+
+get-help Get-Service -Examples
+
+help gsv
+
+Get-Help -Name Get-Service
+
+Get-Service -Name Spooler -DependentServices -ComputerName localhost
+
+Get-Acl
+
+
+Get-Service -name spooler,winrm
+
+Get-EventLog -LogName Security
+
+help Get-EventLog
+
+Get-EventLog -LogName Application -Newest 10
+
+
+[-LogName] <string> --> Mandate
+
+[-ComputerName <string[]>] --> Optional
+
+[[-Name] <string[]>] --> positional
+
+
+Get-Service Spooler -ComputerName localhost,localhost 
+
+
+Get-Service -Name Spooler 
+
+Get-Service Spooler
+
+Get-Service -ComputerName localhost -name Spooler
+
+help Get-EventLog
+
+Get-Service Spooler
+
+
+

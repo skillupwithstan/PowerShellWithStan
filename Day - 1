@@ -1,0 +1,35 @@
+Day 01 - The Introduction
+-------------------------
+
+Course Content
+
+Compiler - Execute all code together
+
+Interpreter - line by line execution
+
+Automation:
+
+1. Dedicated Windows Server
+2. Admin account
+3. Service account created for all servers
+4. Use cases
+5. $PSVersionTable - to check PS version
+
+Code Editor:
+PowerShell ISE - Integrated Scripting Environment [default]
+VSC - Visual Studio Code
+
+PS Cmdlet - Verb-Noun
+
+Get-Service
+Start-Service
+Get-Process
+
+powershell script file extension - filename.ps1
+
+.psm1 -- module file extension
+
+Automation Types:
+-----------------
+Semi-automation - manual intervention
+End-to-end automation (Fully automated)

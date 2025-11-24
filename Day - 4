@@ -1,0 +1,49 @@
+Pipeline
+
+select-object
+select
+
+services --> object
+properties --> name, desc., status, etc.,
+methods --> 
+
+$_ --> ps memory variable
+
+#####################################
+
+# Select
+Get-Service | Select-Object Name,Status
+
+Get-Service | select *
+
+(Get-Service).Name
+
+(Get-Service -Name Spooler).Start()
+[or]
+Start-Service -Name Spooler
+
+Get-Service | Get-Member
+
+Start-Process notepad
+
+# Sort
+
+Get-Process | select Name,VirtualMemorySize | Sort-Object VirtualMemorySize | select -Last 10
+
+
+Get-Process | select Name,VirtualMemorySize | Sort VirtualMemorySize -Descending | select -First 10
+
+# Format
+
+Get-Process | Format-Table -AutoSize -Wrap
+
+Get-Process | Format-List
+
+Get-Service | ft -AutoSize #-Wrap
+
+Get-Service | ft -AutoSize -Wrap
+
+Get-Service | Out-File -FilePath "C:/user/service_details.txt" -Append
+
+Get-Service | ft -AutoSize -Wrap | Out-File -FilePath "C:/user/service_details.txt"
+

@@ -1,0 +1,81 @@
+where-object
+
+Operators Type:
+---------------
+Arithmetic --> +, -, *, /
+Logical --> and, or
+Comparison --> =, !=, >=, <=, >, <
+Boolean --> True, False
+
+File System Handling: Folders, Files
+-----------------------------------
+
+logging --> service_management_23_11_2025.log
+
+txt, log
+--------
+read content --> get-content
+write content --> out-file
+
+csv file
+--------
+read content --> import-csv
+write content --> export-csv
+#########################################
+get-service | Where-Object {$_.Status -match "stopped"} 
+
+
+get-service | Where-Object {$_.Status -cmatch "stopped"}
+
+
+get-service | Where {$_.Status -like "stop*"}
+
+
+get-service | ? {$_.Status -like "stop*"} | select name,status | ft -AutoSize -Wrap 
+
+
+Get-Process | ? {$_.vm -gt 10000}
+
+#File system
+help item
+
+New-Item -Path C:\users\desktop\service -ItemType Directory
+
+New-Item -Path C:\users\desktop\service\sample.txt
+
+Get-Content C:\users\desktop\service\sample.txt
+
+
+$servername = "server123.apac.com"
+
+"Hello $servername" | Set-Content C:\users\desktop\service\sample.txt
+[or]
+Set-Content -Value $servername -Path C:\users\desktop\service\sample.txt
+
+"Hello $servername" | Out-File C:\users\desktop\service\sample.txt
+
+"Hello $servername" | Out-File  C:\users\desktop\service\sample.txt -Append -Force
+
+Get-Service | select name,status | Export-Csv C:\users\desktop\service\sample.csv -Force -NoTypeInformation  
+
+$serviceinfo = Import-Csv C:\users\desktop\service\sample.csv 
+
+Copy-Item -Path C:\users\desktop\service\sample.csv -Destination C:\users\desktop\service123 -Force
+
+Move-Item -Path C:\users\desktop\service -Destination C:\users\desktop\service123 -Force
+
+Get-ChildItem -Path C:\Temp -Recurse
+
+Get-ChildItem -Path C:\ -Filter "*.txt" -Recurse
+
+Test-Path C:\users\desktop\service
+
+Remove-Item C:\users\desktop\service\test.txt -Force
+
+Get-ChildItem -Path C:\Temp -Recurse | Remove-Item -Force
+
+
+
+
+
+#############################

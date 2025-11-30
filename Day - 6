@@ -1,0 +1,114 @@
+Date Time
+
+WMI & CIM
+
+WMI - Windows Management Instrumentation
+CIM - Common Information Model
+
+wmi query
+
+Root
+{
+namespace cimv2
+{
+  class service
+  {
+     name, status, etc.,
+     start(), stop(), restart(), etc.,
+  }
+  class process
+  {
+
+  }
+}
+namespace securitycenter
+{
+ class antivirus
+ { 
+ }
+ class firewall
+ {
+ }
+}
+}
+
+#To get the class details
+Get-CimClass -Namespace root\cimv2	
+
+win32_
+########################################################
+
+Get-Date
+
+
+Get-Date -Format "dd/MM/yyyy"
+
+Get-Date -Format "dd-MMM-yyyy"
+
+
+# d --> Day
+# M --> Month
+# y --> Year
+# h --> Hour (12) -- H --> Hour (24)
+# m --> Minute
+# s --> Seconds
+# tt --> AM/PM
+
+Get-Date -Format "dd-MM-yy h:m tt"
+
+
+(get-date).Day
+
+Get-Date | Get-Member
+
+(Get-Date).AddDays(1)
+(Get-Date).AddDays(-1)
+
+(Get-Date).AddHours(-12)
+
+(Get-Date).AddHours(-6)
+
+Get-EventLog -LogName Application -After (Get-Date).AddHours(-6) -EntryType Error | select Message
+
+Get-EventLog -LogName Application -Before (Get-Date).AddHours(-6) -EntryType Error | select TimeGenerated,Message
+
+Get-EventLog -LogName System | Where-Object {$_.EventID -eq "6005"}
+
+Get-EventLog -LogName Application -Source "Microsoft Teams VDI"
+
+
+# Exercise: generate a "Running" service report with the name "running_service_result_29_11_2025.txt"
+
+#WMI & CIM
+
+Get-WmiObject -Class win32_operatingsystem | select lastbootuptime
+
+Get-CimInstance -Namespace root\cimv2 -Class win32_operatingsystem | select lastbootuptime
+
+Get-CimInstance -Class win32_operatingsystem | select lastbootuptime
+
+Get-CimClass -Namespace root\cimv2 | Where-Object {$_.CimClassName -like "win32_operating*"}
+
+Get-CimClass -Namespace root\cimv2 | Where-Object {$_.CimClassName -like "win32_network*"}
+
+Get-CimClass -Namespace root\cimv2 | Where-Object {$_.CimClassName -like "win32_disk*"}
+
+Get-CimClass -Namespace root\cimv2 | Where-Object {$_.CimClassName -like "win32_*disk*"}
+
+
+
+Get-CimInstance -ClassName win32_diskdrive
+
+Get-CimInstance win32_operatingsystem | select *
+
+Get-CimInstance win32_operatingsystem | select CSName, Lastbootuptime
+
+Get-CimInstance win32_operatingsystem | Get-Member
+
+Get-Cimclass -Namespace root\securitycenter2
+
+Get-CimInstance -Namespace root\securitycenter2 -ClassName AntivirusProduct
+
+
+
+

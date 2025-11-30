@@ -1,0 +1,73 @@
+Get-CimInstance win32_bios | select Name,Version
+
+
+Get-CimInstance Win32_NetworkAdapterConfiguration | select -Property IPAddress
+
+
+$ip = Get-CimInstance Win32_NetworkAdapterConfiguration | select -ExpandProperty IPaddress
+
+$ip.GetType()
+
+$ipv4 = $ip[0]
+$ipv6 = $ip[1]
+
+$ip.Count
+
+"The IP Address of this server: $ip[0]"
+
+"The IP Address of this server: $($ip[0])"
+
+"The IP Address of this server: $ipv4"
+
+
+$ipv4 = (Get-CimInstance Win32_NetworkAdapterConfiguration | select -ExpandProperty IPaddress)[0]
+
+#IP Address Validation
+$i = "1000.3.4.0"
+[ipaddress]$i
+
+[ipaddress]$ipv4
+
+Get-WmiObject win32_service | select name,state
+
+Get-CimInstance win32_logicaldisk | Get-Member
+
+Get-CimInstance win32_logicaldisk | select *
+
+gcim win32_diskdrive | select *
+
+Get-WmiObject -Class win32_operatingsystem -ComputerName localhost,123,localhost -Credential (Get-Credential)
+
+$serverlist1 = "10.3.3.4","3.3.4.4"
+
+$serverlist2 = "10.3.3.4,3.3.4.4"
+
+$serverlist1.GetType()
+$serverlist2.GetType()
+
+$serverlist1 -join ","
+
+
+$serverlist = Get-Content C:/server_list.txt
+
+Get-WmiObject -Class win32_operatingsystem -ComputerName ($server_list -join ",") -Credential (Get-Credential)
+
+Get-WmiObject -Class win32_operatingsystem | Get-Member
+
+Get-WmiObject -Class win32_networkadapterconfiguration | where {$_.Ipaddress -eq "10.188.232.150"} | Invoke-WmiMethod EnableDHCP
+
+Get-WmiObject -Class win32_networkadapterconfiguration | gm
+
+#Invoke-CimMethod 
+
+#custom property - @{name="";expression={$_.Name}}
+
+Get-Service | select Name,Status
+
+Get-Service | select @{name="Service Name";exp={$_.Name}},Status
+
+Get-WmiObject win32_logicaldisk -Filter "DeviceID='C:'" | select DeviceID, Size, FreeSpace
+
+#gwmi win32_logicaldisk
+
+Get-WmiObject win32_logicaldisk -Filter "DeviceID='C:'" | select DeviceID, @{n="Total Size (GB)";e={$_.Size/1GB -as [int]}}, @{n="Available Size (GB)";e={$_.FreeSpace/1GB -as [int]}} 

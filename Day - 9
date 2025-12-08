@@ -1,0 +1,112 @@
+conditional statement
+---------------------
+
+if, if-else, if-elseif-else, nested if condition, switch-case
+
+
+
+syntax:
+if(<condition>)
+{
+
+}
+
+looping statement
+-----------------
+
+iteration
+
+for, foreach, while, do-while
+##################################
+$servicename = Read-Host "Enter the service name"
+
+<#
+if($servicename.Length -eq 0)
+{
+    Write-Host "Please enter the valid service name" -ForegroundColor Red
+}
+
+if($servicename.Length -gt 0)
+{
+    Get-Service -Name $servicename | select name,status
+}
+else
+{
+    Write-Host "Please enter the valid service name" -ForegroundColor Red
+}
+#>
+
+if($servicename -eq "Spooler")
+{
+    Write-Host "The entered service name is Spooler"
+    Get-Service -Name $servicename | select name,status
+}
+elseif($servicename -eq "winrm")
+{
+    Write-Host "The entered service name is WinRM"
+    Get-Service -Name $servicename | select name,status
+}
+else
+{
+    Write-Host "Please enter the valid service name" -ForegroundColor Red
+}
+
+Write-Host "End of code"
+
+
+if(($servicename -eq "winrm") -or ($servicename -eq "spooler"))
+{
+    Get-Service $servicename -ComputerName $server | select name,status
+}
+
+$osname = Get-CimInstance win32_operatingsystem | select Caption
+
+if($osname -match "Microsoft Windows 11*")
+{
+    $service = Read-Host "Enter the service name"
+    if($service.Length -gt 0)
+    {
+        $status = (Get-Service -Name $service).Status
+        Write-Host "The $service status is: $status"
+    }
+    else
+    {
+        "Please enter the valid service name"
+    }
+}
+
+
+$services = Read-Host "Enter the service name (use comma for multiple service name)"
+#$service.Split(",")
+
+#$service.Length
+
+foreach($service in $services.Split(","))
+{
+    Get-Service $service | select Name,Status    
+}
+
+
+$services.Split()[0]
+$services.Split()[1]
+
+$services.Split().Count
+
+Get-Service $services.Split()[$i]
+
+for($i=0; $i -lt 5; $i++) # $i = $i + 1
+{
+    $i
+}
+
+#Reverse 
+for($i=5; $i -gt 0; $i--) # $i = $i - 1
+{
+    $i
+}
+
+#Exercise 1: use for loop for getting multiple service status
+#Exercise 2: Get multiple services from user and valdiate the value is not empty.
+#             check status of each service name, if the status is running print green color
+#             else red color
+#Exercise 3: Use File as input intead of read-host

@@ -1,0 +1,101 @@
+Exception Handling
+File Validation, IP Address validation
+
+Server Name, Connectivity, Service Name, Status
+#########################################################
+$services = Read-Host "Enter the service names (use comma for multiple service name)"
+
+
+$services.GetType()
+
+$services.Split(",")[0]
+$services.Split(",")[1]
+
+
+for($s=0; $s -lt $services.Split(",").Count ; $s++)
+{
+      Get-Service $services.Split(",")[$s] | select Name,status
+}
+
+
+$service = Get-Content C:/servicename.txt 
+
+###############################################################################
+
+$filename = "C:\Users\Documents\SkillUp\serverlist.txt"
+$outfile = "C:\Users\Documents\SkillUp\service_result.csv"
+
+$services_list = "spooler","winrm","alg","wisvc","wscsvc"
+
+if(Test-Path $outfile)
+{
+    Remove-Item $outfile -Force 
+}
+
+if(Test-Path $filename)
+{
+    $servers_list = Get-Content $filename
+
+    foreach($server in $servers_list)
+    {
+        $server = $server.Trim()
+        if(Test-Connection $server -Quiet)
+        {
+            Write-Host "The server: $server is reachable successfully" -ForegroundColor Green
+
+            foreach($service in $services_list)
+            {
+                $current_status = (Get-Service $service -ComputerName $server).Status
+
+                if($status -eq "Stopped")
+                {
+                    Get-Service $service -ComputerName $server | Start-Service
+                    Start-Sleep 1
+                    
+                    $updated_status = (Get-Service $service -ComputerName $server).Status
+                }
+
+                $result = [ordered] @{
+                            "Server Name" = $server
+                            "Connectivity" = "YES"
+                            "Service Name" = $service 
+                            "Service Status" = $status
+                           }
+               [pscustomobject]$result | export-csv $outfile -Append -NoTypeInformation
+
+            }
+        }  
+        else
+        {
+            write-host "The server: $server is not reachable" -ForegroundColor Red
+
+            
+                $result = [ordered] @{
+                            "Server Name" = $server
+                            "Connectivity" = "NO"
+                            "Service Name" = ""
+                            "Service Status" = ""
+                           }
+               [pscustomobject]$result | export-csv $outfile -Append -NoTypeInformation
+        }  
+    }
+}
+else
+{
+    Write-Host "Input File is Not Found" -ForegroundColor Red   
+}
+
+
+
+$file_data = gc $filename
+
+$server_list = $file_data[0].Split(":")[1].Split(",")
+$service_list = $file_data[1].Split(":")[1].Split(",")
+
+
+$user = "Raj Kumar"
+$user.Split() -join ""
+
+$user.Replace("Raj","Rajesh")
+
+

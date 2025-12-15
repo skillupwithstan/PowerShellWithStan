@@ -1,0 +1,172 @@
+exception --> error
+
+db session
+
+try
+{
+   foreach($service in $services_list)
+            {
+                $current_status = (Get-Service $service -ComputerName $server).Status
+
+                if($status -eq "Stopped")
+                {
+                    Get-Service $service -ComputerName $server | Start-Service
+                    Start-Sleep 1
+                    
+                    $updated_status = (Get-Service $service -ComputerName $server).Status
+                }
+
+                $result = [ordered] @{
+                            "Server Name" = $server
+                            "Connectivity" = "YES"
+                            "Service Name" = $service 
+                            "Service Status" = $status
+                           }
+               [pscustomobject]$result | export-csv $outfile -Append -NoTypeInformation
+
+            }	
+}
+catch
+{
+  "Error Occured!"
+}
+finally
+{
+  dbsession.close()
+}
+
+
+`n --> new line
+`t --> tab space
+
+function --> is a method
+
+
+usermanagment.ps1
+
+function Add-User
+{
+	
+}
+function Modify-User
+{
+	
+}
+function Remove-User
+{
+	
+}
+
+function Select-Option
+{
+	$option = read-host "Enter 1 for User Addition"
+	if($option -eq "1")
+	{
+		$username = read-host "Please enter username"
+		Add-User -UserName $username 
+	}
+}
+##########################################
+
+$filename = "C:/desktop/serverlist.txt"
+$outfile = "C:/desktop/server_connectivity_result.csv"
+
+$reachable = ""
+$unreachable = ""
+
+try
+{
+   $serverlist = Get-Content $filename
+   
+   foreach($server in $serverlist)
+   {
+        try
+        {
+            Test-Connection $server -Count 1 -ErrorAction Stop
+
+            $reachable += $server + "`n"
+        }
+        catch
+        {
+            $unreachable += $server + "`n"
+        }
+
+   }
+
+   #"The reachable servers are: `n$reachable"
+   #"The unreachable servers are: `n$unreachable"
+
+   $output = [ordered] @{
+            Reachable = $reachable
+            UnReachable = $unreachable
+            }
+
+    [pscustomobject] $output | Format-Table -AutoSize -Wrap | Export-Csv $outfile -NoTypeInformation
+
+}
+catch
+{
+   Write-Host "Input File is not present"
+}
+
+function Get-NotepadProcess 
+{ 
+    Get-Process notepad 
+}
+
+Get-NotepadProcess
+
+function get-servicelist
+{
+    get-service $servicename 
+}
+
+
+get-servicelist winrm
+
+help Get-Service 
+
+
+
+###############################################
+
+function Get-DiskInventory
+{
+    <#
+    .Synopsis   
+        To get disk details
+    .DESCRIPTION   
+        Get server disk allocation
+    .EXAMPLE
+        Example of how to use this function 
+    .EXAMPLE  
+        Another example of how to use this function 
+    .INPUTS   
+        Inputs to this function (if any) 
+    .OUTPUTS   
+        Output from this function (if any) 
+    .NOTES   
+        General notes about Disk Data
+    .COMPONENT   
+        The component this function belongs to 
+    .ROLE   
+        The role this function belongs to 
+    .FUNCTIONALITY   
+        The functionality that best describes this function 
+    #>
+
+    #paramters - keyword
+    param(
+            $cname = 'localhost',
+            [int]$dtype = 3
+    )
+
+    gwmi win32_logicaldisk -ComputerName $cname -filter "drivetype=$dtype" |
+    sort DeviceID | select DeviceID, @{name='FreeSpace (MB)';expression={$_.Freespace / 1MB -as [int]}},
+    @{name='Total Size (GB)';expression={$_.Size / 1GB  -as [int]}},
+    @{name='%Free';expression={$_.Freespace / $_.Size * 100  -as [int]}}
+}
+
+#Calling a function
+Get-DiskInventory -cname localhost -dtype 3
+

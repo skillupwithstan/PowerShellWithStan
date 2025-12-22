@@ -1,0 +1,100 @@
+Function
+Remoting
+Types: 1-1, 1-Many
+
+Pre-req:
+
+1. Server connectivity
+2. Authentication (Credentials) - service account to be created - do not/never expire the password
+3. PS Execution policy - Remote signed, unrestricted
+4. WinRM to be enabled (Windows Remoting Management)
+5. winrm service "Running"
+
+password, key based
+###########################################################
+
+function Get-Uptime
+{
+    param(
+    [parameter(mandatory)]$ComputerName = "localhost"
+    )
+
+    Write-Host "The entered server is: $ComputerName"
+
+    $uptime = Get-CimInstance win32_operatingsystem | select lastbootuptime
+    $uptime
+}
+
+$result = Get-Uptime -ComputerName localhost
+write-host "The uptime is: $($result.lastbootuptime)"
+
+############################################################
+
+Get-WmiObject -Class win32_service -ComputerName server12,df,sdf -Credential (Get-Credential)
+
+
+#1-1 Remoting:
+
+Enter-PSSession -ComputerName localhost -Credential (Get-Credential)
+
+
+#[server123] PS C:\Window\system32> get-service
+
+
+Exit-PSSession
+
+
+#1-Many Remoting:
+
+$cred = Get-Credential
+
+$session = New-PSSession -ComputerName server123 -Credential $cred -ErrorAction Stop
+
+Invoke-Command -Session $session -ScriptBlock {get-service}
+
+
+$output = Invoke-Command -Session $session -ScriptBlock {
+
+function Get-Uptime
+{
+    param(
+    [parameter(mandatory)]$ComputerName = "localhost"
+    )
+
+    Write-Host "The entered server is: $ComputerName"
+
+    $uptime = Get-CimInstance win32_operatingsystem | select lastbootuptime
+    $uptime
+}
+
+$result = Get-Uptime -ComputerName localhost
+write-host "The uptime is: $($result.lastbootuptime)"
+
+}
+
+
+$block = {
+
+function Get-Uptime
+{
+    param(
+    [parameter(mandatory)]$ComputerName = "localhost"
+    )
+
+    Write-Host "The entered server is: $ComputerName"
+
+    $uptime = Get-CimInstance win32_operatingsystem | select lastbootuptime
+    $uptime
+}
+
+$result = Get-Uptime -ComputerName localhost
+write-host "The uptime is: $($result.lastbootuptime)"
+
+}
+
+$output = Invoke-Command -Session $session -ScriptBlock $block -ThrottleLimit 50
+
+$result = Invoke-Command -Session $session -ScriptBlock { Get-Service  } -ThrottleLimit 10
+
+$result
+

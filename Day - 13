@@ -1,0 +1,30 @@
+Modules -> online, offline (2)
+
+dll --> dynamic link library
+xml --> extendable markup language
+##########################################
+try
+{
+
+$cred = Get-Credential
+
+$session = New-PSSession -ComputerName server123 -Credential $cred -ErrorAction Stop
+
+Invoke-Command -Session $session -ScriptBlock {get-service}
+
+}
+catch
+{
+    "Couldn't connect server"    
+}
+
+#############################################################
+
+Get-Module -Name Microsoft.PowerShell.Management
+
+Install-Module ActiveDirectory
+
+Import-Module 
+
+get-aduser
+

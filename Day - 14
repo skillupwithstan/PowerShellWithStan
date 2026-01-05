@@ -1,0 +1,225 @@
+$? --> previous command result (True/False)
+
+#############################
+
+Import-Module -Name ActiveDirectory
+
+get-ADuser 
+
+
+Install-Module -Name ActiveDirectory
+
+#Server Features page --> Remote Server Administration Tools --> Role Administration Tools --> AD DS and AD LDS Tools, then select Active Directory module for Windows Powershell --> Next --> Install
+
+Install-Module -Name ActiveDirectory -Scope CurrentUser
+
+Uninstall-Module ActiveDirectory 
+
+
+Get-Command -Module ActiveDirectory
+
+
+$session = New-PSSession -ComputerName adserver
+$result = Invoke-Command -Session $session -ScriptBlock {
+Import-Module -Name ActiveDirectory 
+
+}
+
+
+
+Get-ADComputer -Filter "*"
+
+
+Get-ADComputer -filter 'name -like "server01"' | select name,OperatingSystem,IPv4Address
+
+Get-ADComputer -filter {OperatingSystem -Like '*Windows 10*'} -property * | select name, operatingsystem
+
+
+Remove-ADComputer -Identity "SRV04"
+
+Get-ADOrganizationalUnit -Filter * | fl Name,DistinguishedName
+
+
+#Adding users into a Group
+Add-ADGroupMember -Identity TestGroup -Member Senthil
+
+Get-ADUser "<Name>" -Properties LastLogonDate | Format-Table
+
+Get-ADUser "<Name>" -Properties * | Select name, department, title
+
+Get-ADUser -SearchBase “OU=ADPRO Users,dc=ad,dc=activedirectorypro.com” -Filter *
+
+get-Aduser -Filter {name -like "*arockia*"}
+
+Get-ADUser -Filter {(Enabled -eq $true)} -Properties LastLogonDate | select samaccountname, Name, LastLogonDate | Sort-Object LastLogonDate
+
+#Get All Disable User Accounts
+
+Search-ADAccount -AccountDisabled | select name
+
+#Disable User Account
+
+Disable-ADAccount -Identity allen
+
+#Enable User Account
+
+Enable-ADAccount -Identity allen
+
+#Get All Accounts with Password Set to Never Expire
+
+get-aduser -filter * -properties Name, PasswordNeverExpires | where {$_.passwordNeverExpires -eq "true" } | Select-Object DistinguishedName,Name,Enabled
+
+#Find All Locked User Accounts
+Search-ADAccount -LockedOut
+
+#Unlock User Account
+
+Get-ADUser -Identity Arockia | Unlock-ADAccount
+
+Unlock-ADAccount –Identity Suresh
+
+#List all Disabled User Accounts
+
+Search-ADAccount -AccountDisabled
+
+#Force Password Change at Next Login
+
+Set-ADUser -Identity username -ChangePasswordAtLogon $true
+
+#Display Basic Domain Information
+Get-ADDomain
+
+#Get all Domain Controllers by Hostname and Operating
+Get-ADDomainController -filter * | select hostname, operatingsystem
+
+#Get all Fine Grained Password Policies
+Get-ADFineGrainedPasswordPolicy -filter *
+
+#Get Domain Default Password Policy
+Get-ADDefaultDomainPasswordPolicy
+
+
+##############################
+
+Get-Service -ErrorAction SilentlyContinue
+
+
+$ErrorActionPreference = "SilentlyContinue"
+$ServerName = Read-Host "Enter the Server Name"
+$ADObj = Get-ADComputer -Identity $server
+
+if ( $ADobj -ne $null)
+{
+    try{
+        $ADObj | Remove-ADComputer
+
+        #Method -1 
+        
+        if ($?) 
+        {
+            Write-Host  $ADObj.Name 'AD Computer Object Found and deleted Succesfully'
+        }
+        else 
+        {
+            Write-Host  $ADObj.Name 'AD Object deletion Failed'
+        }
+
+        #Method - 2
+
+        <#
+        $result = Get-ADComputer -Identity $ServerName
+
+        if($result -eq "")
+        {
+            "$ServerName is removed successfully!"
+        }
+        else
+        {
+           "$ServerName is not removed!"
+        }
+        #>
+    }
+    catch
+    {
+        Write-Host $_.Exception.Message
+    }
+}
+else
+{
+    Write-Host $ServerName 'AD Computer Object Not Found'
+}
+
+######################################################################
+
+# Step 1: Import the PowerCLI module
+Import-Module VMware.PowerCLI
+
+# Step 2: Connect to the vCenter server
+$vcenterServer = "your_vcenter_server"
+$credential = Get-Credential
+Connect-VIServer -Server $vcenterServer -Credential $credential
+
+# Step 3: Check the health status of ESXi hosts
+Write-Output "ESXi Hosts Health Status:"
+Get-VMHost | Select-Object Name, State, ConnectionState, PowerState, @{Name="OverallStatus";Expression={$_.ExtensionData.Summary.OverallStatus}}
+
+# Step 4: Check the health status of VMs
+Write-Output "VMs Health Status:"
+Get-VM | Select-Object Name, PowerState, @{Name="OverallStatus";Expression={$_.ExtensionData.Summary.OverallStatus}}
+
+# Step 5: Check the health status of datastores
+Write-Output "Datastores Health Status:"
+Get-Datastore | Select-Object Name, FreeSpaceGB, CapacityGB, @{Name="OverallStatus";Expression={$_.ExtensionData.OverallStatus}}
+
+# Step 6: Disconnect from the vCenter server
+Disconnect-VIServer -Server $vcenterServer -Confirm:$false
+
+######################################################################################
+
+# Step 1: Install the Azure PowerShell module (if not already installed)
+Install-Module -Name Az -Scope CurrentUser
+
+# Step 2: Import the Azure PowerShell module
+Import-Module Az
+
+# Step 3: Connect to your Azure account
+Connect-AzAccount -credentials (get-credential) 
+
+# Step 4: Create a resource group
+$resourceGroupName = "myResourceGroup"
+$location = "EastUS"
+New-AzResourceGroup -Name $resourceGroupName -Location $location
+
+# Step 5: Create a virtual machine
+$vmName = "myVM"
+$vmSize = "Standard_DS1_v2"
+$adminUsername = "azureuser"
+$adminPassword = ConvertTo-SecureString "P@ssw0rd1234" -AsPlainText -Force
+
+# Create a new virtual network
+$vnet = New-AzVirtualNetwork -ResourceGroupName $resourceGroupName -Location $location -Name "myVnet" -AddressPrefix "10.0.0.0/16"
+
+# Create a subnet
+$subnet = Add-AzVirtualNetworkSubnetConfig -Name "mySubnet" -AddressPrefix "10.0.0.0/24" -VirtualNetwork $vnet
+$vnet | Set-AzVirtualNetwork
+
+# Create a public IP address
+$pip = New-AzPublicIpAddress -ResourceGroupName $resourceGroupName -Location $location -Name "myPip" -AllocationMethod Dynamic
+
+# Create a network security group
+$nsg = New-AzNetworkSecurityGroup -ResourceGroupName $resourceGroupName -Location $location -Name "myNsg"
+
+# Create a NIC
+$nic = New-AzNetworkInterface -ResourceGroupName $resourceGroupName -Location $location -Name "myNic" -SubnetId $subnet.Id -PublicIpAddressId $pip.Id -NetworkSecurityGroupId $nsg.Id
+
+# Create the VM configuration
+$vmConfig = New-AzVMConfig -VMName $vmName -VMSize $vmSize | `
+    Set-AzVMOperatingSystem -Windows -ComputerName $vmName -Credential (New-Object PSCredential ($adminUsername, $adminPassword)) | `
+    Set-AzVMSourceImage -PublisherName "MicrosoftWindowsServer" -Offer "WindowsServer" -Skus "2019-Datacenter" -Version "latest" | `
+    Add-AzVMNetworkInterface -Id $nic.Id
+
+# Create the VM
+New-AzVM -ResourceGroupName $resourceGroupName -Location $location -VM $vmConfig
+
+# Step 6: Verify the virtual machine creation
+Get-AzVM -ResourceGroupName $resourceGroupName -Name $vmName

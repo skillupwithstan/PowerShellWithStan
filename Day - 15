@@ -1,0 +1,137 @@
+1. pssession
+2. dbsession 
+3. object
+
+
+:: --> Access specifier
+
+class A
+{
+}
+class B:A
+{
+}
+class C:B
+{
+}
+class D:C
+{
+}
+
+A :: D
+
+###############################################
+
+#Basic excel operations
+$outfile = "D:\ServiceDetails_$(get-date -Format "dd_MM_yyyy").xlsx"
+
+#h -> 12 hours
+#H -> 24 hours
+#m -> minute
+#s -> seconds
+
+if(Test-Path $outfile)
+{
+    Remove-Item $outfile -Force 
+}
+
+$Excel = New-Object -ComObject Excel.Application
+$Excel.Visible = $true
+$Excel1 = $Excel.Workbooks.Add()
+$sheet = $Excel1.Worksheets.Item(1)
+$sheet.Name = "Service Details"
+$row = 1
+$sheet.Cells.Item($row,1) = 'Service Name'
+$sheet.Cells.Item($row,2) = 'Service Status'
+$services = Get-Service
+foreach($i in $services)
+{
+    $row = $row + 1
+    $sheet.Cells.Item($row,1) = $i.Name
+    $sheet.Cells.Item($row,2) = $i.Status.ToString()
+}
+
+$Excel1.SaveAs($outfile)
+#"D:\ServiceDetails_$(get-date -Format "dd_MM_yyyy").xlsx"
+$Excel.Quit()
+
+###########################################################
+
+# Get-Service | select Name,Status | export-csv "D:\ServiceDetails.csv"
+# Remove-Variable $Excel, $Excel1, $sheet, $services
+# Remove-Variable *
+
+#outlook - interoperability
+$outlook = New-Object -comobject outlook.application
+$olFolders = “Microsoft.Office.Interop.Outlook.olDefaultFolders” -as [Type]
+$namespace = $outlook.GetNameSpace(“MAPI”)
+$folder = $namespace.getDefaultFolder($olFolders::olFolderInBox)
+#$folder = $namespace.getDefaultFolder($olFolders::olFolderSentMail)
+$folder.items | Select-Object Subject, ReceivedTime, SenderName -First 5 | fl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###############################################################
+
+$gsv_details = gsv
+
+#To Send mail
+#Option - 1 - Plain Text
+$body = {
+"Hello $name, `n Please find the service details. $gsv_details `n regards,automation"
+}
+
+#Option - 2 - HTML Text
+
+$servername = Read-Host "Enter the server"
+$osname = gwmi win32_operatingsystem | select caption
+
+
+$body =  "<html>"
+$body += "<head>"
+$body += "<table>"
+$body += "<tr> Server Name </tr>"
+$body += "<td> $servername </td>"
+$body += "<tr> OS Name </tr>"
+$body += "<td> $osname </td>"
+$body += "</table>"
+$body += "</html>"
+
+Send-MailMessage -To "kumar@gmail.com" -From "kumar@gmail.com" -Subject "Test Mail" -SmtpServer "mail.google.com" -Port 25 -Body $body -Credential $MyCredential -Attachments D:\serverlist.txt
+
+
+
+
+
+
+
+
+
+
+

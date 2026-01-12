@@ -1,0 +1,73 @@
+API Management
+--------------
+
+API - Application Programming Interface
+
+Application | Program
+ServiceNow | PowerShell
+
+URL: https://company.service-now.com/dashboard
+
+
+Incident Management
+  Create Incident
+  Assigned to your Group
+  Assigned to you
+Change Mngt
+  New Change
+  Assigned to your Group
+  Assigned to you
+Problem Mngt
+  
+Service Request
+
+xyz - C drive is reached 80% 
+
+
+sample API URL: 
+https://company.service-now.com/api
+https://company.service-now.com/v1/api
+https://company.service-now.com/v2/api/
+
+https://company-dev.service-now.com/api
+
+
+1. API URL
+2. API Documentation
+3. API Credentials
+
+API --> SOAP (XML) / REST (JSON)
+
+<h1>
+<html>
+
+<xml>
+
+</xml>
+
+API Methods:
+-----------
+
+GET --> fetch the data
+POST --> create a record/update the record
+PUT --> update the record
+DELETE --> delete the record
+
+API Status Code:
+
+200, 201 --> Success
+400,401,404 --> Failure (Resource not found)
+
+
+json query
+
+##########################################################
+Invoke-WebRequest www.google.com -UseBasicParsing 
+
+Invoke-RestMethod -Uri "https://jsonplaceholder.typicode.com/posts" -Method Get
+
+$result = Invoke-RestMethod -Method Get -Uri "https://api.restful-api.dev/objects"  -Credential $cred 
+
+$result | Where-Object {$_.id -eq 1} | select name
+
+

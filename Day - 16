@@ -1,0 +1,101 @@
+JSON --> Java Script Object Notation
+
+{
+  name: Parasuraman,
+  age: 25,
+[
+  city: "TN  Chennai"
+]
+}
+
+.json
+
+#############################################
+
+# Creds
+
+Get-Credential
+
+$user = 'Arockia' 
+$str2 = ConvertTo-SecureString 'Password2!' -AsPlainText -Force
+$pw = Read-Host "Enter the password" -AsSecureString
+
+#Method - 1
+param($password)
+
+$pwd = $password | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString
+$MyCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, ($pwd | ConvertTo-SecureString)
+
+#Method - 2 
+
+#$pwd = "Password@123" | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString | Out-File pwd.txt
+$MyCredential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $user, ( Get-Content ./pwd.txt | ConvertTo-SecureString)
+
+gwmi -Class win32_operatingsystem -ComputerName server01 -Credential $MyCredential
+
+$cred_file = Get-Content 'C:\Users\input.txt'
+$server_cred = $cred_file[0].Split(":")[1]
+$db_cred = $cred_file[2].Split(":")[1]
+$domain_cde_cred = $cred_file[4].Split(":")[1]
+
+$server_cred
+$db_cred
+
+###########################################
+#Software Installation
+
+$script = {
+
+function install_software
+{
+    param([String]$targetPath,
+    [String]$fileName,
+    [String]$proxyServer,
+    [String]$groupingTags)
+
+    $exePath=$targetPath+'\'+$fileName
+    #Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe"
+    Start-Process -FilePath $exePath -ArgumentList "/install /quiet /norestart APP_PROXYNAME=$proxyServer APP_PROXYPORT=3128 GROUPING_TAGS=$groupingTags > C:\Temp\output_CrowdStrikeInstallation.log"
+}
+<#
+msiexec.exe [/i][/a][/j{u|m}][/x] <path_to_package>
+
+/i  -->	Specifies normal installation.
+/a  -->	Specifies administrative installation.
+/ju -->	Advertise the product to the current user.
+/jm	--> Advertise the product to all users.
+/x	--> Uninstalls the package.
+path_to_package -->	Specifies the location and name of the installation package file.
+#>
+
+###########################################
+
+
+install_software -fileName chrome.exe -targetPath 'C:\temp'
+
+}
+
+$result = Invoke-Command -ComputerName server1 -Credential $cred -ScriptBlock $script
+
+#############################################
+
+#Clean Temp folder
+
+$cutoff = (Get-Date).AddDays(-30)  #(Get-Date) - (New-TimeSpan -Days 30) 
+
+$before = (Get-ChildItem $env:temp | Measure-Object Length -Sum).Sum
+
+#Get-ChildItem | gm
+
+Get-ChildItem $env:temp | Where-Object { $_.Length -ne $null } |
+Where-Object { $_.LastWriteTime -lt $cutoff } |      
+Remove-Item -Force -ErrorAction SilentlyContinue -Recurse
+
+$after = (Get-ChildItem $env:temp | Measure-Object Length -Sum).Sum 
+
+$freed = $before - $after
+
+Write-Host 'Cleanup freed ' + ($freed/1MB)
+
+#############################################
+

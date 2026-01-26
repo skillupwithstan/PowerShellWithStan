@@ -1,0 +1,38 @@
+Install-Module PSWindowsUpdate -Force
+Import-Module PSWindowsUpdate
+
+(Get-WindowsUpdate -MicrosoftUpdate | Select KB, Title, Size).count
+
+Install-WindowsUpdate -MicrosoftUpdate -AcceptAll #-autoreboot
+
+Install-WindowsUpdate -Category 'Security Updates','Critical Updates' -AcceptAll -AutoReboot
+
+Get-WUHistory | Select Date, KB, Title, Result
+
+Get-HotFix | Where-Object {$_.InstalledOn.date -eq (get-date).AddDays(-1).date}
+
+#(get-service).count
+
+Get-WindowsUpdateLog
+
+# PS DSC
+
+Configuration ServiceManagement
+{
+    Import-DscResource -ModuleName 'PSDesiredStateConfiguration'
+
+    Node 'localhost'
+    {
+        Service WindowsUpdateService
+        {
+            Name        = ‘winrm'
+            Ensure      = 'Present'
+            State       = 'Running'
+            StartupType = 'Automatic'
+        }
+    }
+}
+
+# Apply the configuration
+ServiceManagement -OutputPath "C:\Users\Documents\SkillUp\ServiceManagement"
+Start-DscConfiguration -Path "C:\Users\Documents\SkillUp\ServiceManagement" -Wait -Verbose

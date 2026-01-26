@@ -1,0 +1,64 @@
+# Logging 
+  
+$LogFile = "C:\Users\SkillUp\script.log"
+  
+"Executed by: $(whoami)" | Out-File -FilePath $LogFile -Append
+
+"Script started: $(Get-Date)" | Out-File -FilePath $LogFile -Append
+
+$service = Read-Host "Enter the service name"
+
+"The entered service is $service" | Out-File -FilePath $LogFile -Append
+
+$status = (get-service $service).Status
+
+"The status of $service is $status" | Out-File -FilePath $LogFile -Append
+
+gsv | Out-File -FilePath $LogFile -Append
+
+#"Doing some work..." | Out-File -FilePath $LogFile -Append
+
+"Script ended: $(Get-Date)" | Out-File -FilePath $LogFile -Append
+
+###############################
+
+$LogFile = "C:\Users\SkillUp\script.log"
+
+function Write-Log {
+    param (
+        [string]$Message,
+        [string]$Level = "INFO"
+    )
+
+    $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    "$Timestamp [$Level] $Message" | Out-File -FilePath $LogFile -Append
+}
+
+Write-Log "Script started"
+Write-Log "Processing user data"
+Write-Log "Something went wrong" "ERROR"
+Write-Log "Script finished"
+
+###############################
+
+$LogFile = "C:\Users\SkillUp\script.log"
+
+Start-Transcript -Path $LogFile -Append
+
+get-service
+
+gsc
+
+Stop-Transcript
+
+######################################
+Import-Module AWS.Tools.EC2
+#Install-Module AWS.Tools.Common, AWS.Tools.EC2, AWS.Tools.S3
+
+$region = "ap-south-1"
+
+Get-EC2Instance -Region $region |
+Select-Object -ExpandProperty Instances |
+Where-Object { $_.State.Name -eq "running" } |
+Select-Object InstanceId, InstanceType, PublicIpAddress
+

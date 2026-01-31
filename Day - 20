@@ -2,3 +2,97 @@ Interview questions
 --------------------
 
 https://skillupwithstan.blogspot.com/2023/03/powershell-interview-questions-for.html
+
+
+# conditional stmt
+
+$a = 100
+
+if($a -lt 10)
+{
+    "OK"
+    if($a -eq 5)
+    {
+        
+    }
+    else
+    {
+
+    }
+}
+elseif(($a -gt 10) -and ($a -lt 20))
+{
+    "OK"
+    if($a -eq 5)
+    {
+        
+    }
+    else
+    {
+
+    }
+}
+else
+{
+    "NOT OK"
+    if($a -eq 5)
+    {
+        
+    }
+    else
+    {
+
+    }
+}
+
+
+# looping - iteration
+
+$num = 10,20,30
+
+foreach($i in $num)
+{
+   if($i -le 10)
+   {
+        "The value is 10" 
+   }
+   else
+   {
+        "The value is greater than 10"
+   }
+}
+
+gsv | where {$_.Status -eq "Running"}
+
+function Get-Value
+{
+    param($a)
+
+    if($a -gt 10)
+    {
+        "YES"
+    }
+    else
+    {
+        "NO"
+    }
+}
+
+Get-Value -a 5
+
+Get-Service -name spooler
+
+Day - 20
+--------
+1. if-else
+2. foreach
+3. function
+
+Debugging
+---------
+
+F5 --> Full script execution 
+F8 --> Particular line/selected lines
+F9 --> Set Breakpoint
+F10/F11 --> Line by line execution
+
